@@ -45,6 +45,7 @@ import com.example.myai.ui.theme.ColorNavy
 import com.example.myai.ui.theme.ColorPurple
 import com.example.myai.ui.theme.ColorUserMessage
 import com.example.myai.ui.theme.ColorWhite
+import com.example.myai.ui.theme.fontFamily
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
@@ -81,7 +82,9 @@ fun AppHeader(modifier: Modifier = Modifier) {
         Text(
             text = "My AI",
             color = ColorWhite,
-            fontSize = 22.sp
+            fontSize = 22.sp,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.ExtraBold
         )
     }
 }
@@ -112,6 +115,7 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
                 if (message.isEmpty()) {
                     Text(
                         text = "Type a message...",
+                        fontFamily = fontFamily,
                         color = ColorGrey,
                         fontSize = 16.sp,
                         modifier = Modifier.padding(start = 4.dp)
@@ -120,7 +124,7 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
                 BasicTextField(
                     value = message,
                     onValueChange = { message = it },
-                    textStyle = TextStyle(fontSize = 16.sp, color = ColorBlack),
+                    textStyle = TextStyle(fontSize = 16.sp, color = ColorBlack, fontFamily = fontFamily),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
@@ -161,7 +165,8 @@ fun MessageList(modifier: Modifier = Modifier, messageList : List<MessageModel>)
             )
             Text(
                 text = "Ask me anything",
-                fontSize = 22.sp
+                fontSize = 22.sp,
+                fontFamily = fontFamily
             )
         }
     } else {
@@ -209,7 +214,8 @@ fun MessageRow(messageModel: MessageModel) {
                     Text(
                         text = messageModel.message.trim(),
                         fontWeight = FontWeight.W500,
-                        color = ColorBlack
+                        color = ColorBlack,
+                        fontFamily = fontFamily
                     )
                 }
             }
