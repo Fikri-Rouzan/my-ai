@@ -1,20 +1,20 @@
 package com.example.myai
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +22,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -33,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +46,7 @@ import com.example.myai.ui.theme.ColorGrey
 import com.example.myai.ui.theme.ColorModelMessage
 import com.example.myai.ui.theme.ColorNavy
 import com.example.myai.ui.theme.ColorPurple
+import com.example.myai.ui.theme.ColorRed
 import com.example.myai.ui.theme.ColorUserMessage
 import com.example.myai.ui.theme.ColorWhite
 import com.example.myai.ui.theme.fontFamily
@@ -50,34 +54,61 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
-    Column(modifier = Modifier) {
+    val context = LocalContext.current
+
+    Column(modifier = modifier.fillMaxSize()) {
         AppHeader()
+
         MessageList(
             modifier = Modifier.weight(1f),
             messageList = viewModel.messageList
         )
-        MessageInput(
-            onMessageSend = {
-            viewModel.sendMessage(it)
+
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            MessageInput(
+                onMessageSend = { viewModel.sendMessage(it) }
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = { logout(context) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = ColorRed)
+            ) {
+                Text("Logout", color = ColorWhite, fontFamily = fontFamily)
             }
-        )
+        }
     }
 }
 
+fun logout(context: Context) {
+    val sharedPref = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+    with(sharedPref.edit()) {
+        putBoolean("IS_LOGGED_IN", false)
+        apply()
+    }
+
+    val intent = Intent(context, LoginActivity::class.java)
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    context.startActivity(intent)
+}
+
 @Composable
-fun AppHeader(modifier: Modifier = Modifier) {
+fun AppHeader() {
     val systemUiController = rememberSystemUiController()
     SideEffect {
-        systemUiController.setStatusBarColor(ColorNavy, darkIcons = false)
+        systemUiController.setStatusBarColor(ColorNavy, darkIcons = true)
     }
-    Column(
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(ColorNavy)
-            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
             .height(56.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = "My AI",
