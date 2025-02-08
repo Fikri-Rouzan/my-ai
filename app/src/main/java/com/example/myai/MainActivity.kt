@@ -15,11 +15,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val chatViewModel = ViewModelProvider(this) [ChatViewModel::class.java]
+
+        val chatViewModel = ViewModelProvider(this)[ChatViewModel::class.java]
+
         setContent {
             MyAITheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ChatPage(modifier = Modifier.padding(innerPadding), chatViewModel)
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+                    ChatPage(
+                        modifier = Modifier.padding(innerPadding),
+                        chatViewModel
+                    )
                 }
             }
         }

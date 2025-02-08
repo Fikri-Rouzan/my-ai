@@ -43,14 +43,17 @@ import com.example.myai.ui.theme.Purple80
 
 @Composable
 fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
-    Column (
-        modifier = Modifier
-    ) {
+    Column(modifier = Modifier) {
         AppHeader()
-        MessageList(modifier = Modifier.weight(1f), messageList = viewModel.messageList)
-        MessageInput(onMessageSend = {
+        MessageList(
+            modifier = Modifier.weight(1f),
+            messageList = viewModel.messageList
+        )
+        MessageInput(
+            onMessageSend = {
             viewModel.sendMessage(it)
-        })
+            }
+        )
     }
 }
 
@@ -60,13 +63,14 @@ fun AppHeader(modifier: Modifier = Modifier) {
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
-            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+            .padding(
+                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+            )
             .height(56.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
-            modifier = Modifier
-                .padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             text = "My AI",
             color = Color.White,
             fontSize = 22.sp
@@ -75,10 +79,8 @@ fun AppHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MessageInput(onMessageSend : (String)-> Unit) {
-    var message by remember {
-        mutableStateOf("")
-    }
+fun MessageInput(onMessageSend: (String)-> Unit) {
+    var message by remember { mutableStateOf("") }
 
     Row(
         modifier = Modifier
@@ -89,19 +91,17 @@ fun MessageInput(onMessageSend : (String)-> Unit) {
         OutlinedTextField(
             modifier = Modifier.weight(1f),
             value = message,
-            onValueChange = {
-                message = it
-            },
-            placeholder = {
-                Text("Type a message....")
-            }
+            onValueChange = { message = it },
+            placeholder = { Text("Type a message....") }
         )
-        IconButton(onClick = {
-            if (message.isNotEmpty()) {
-                onMessageSend(message)
-                message = ""
+        IconButton(
+            onClick = {
+                if (message.isNotEmpty()) {
+                    onMessageSend(message)
+                    message = ""
+                }
             }
-        }) {
+        ) {
             Icon(
                 imageVector = Icons.Default.Send,
                 contentDescription = "Send"
@@ -124,7 +124,10 @@ fun MessageList(modifier: Modifier = Modifier, messageList : List<MessageModel>)
                 contentDescription = "Icon",
                 tint = Purple80
             )
-            Text(text = "Ask me anything", fontSize = 22.sp)
+            Text(
+                text = "Ask me anything",
+                fontSize = 22.sp
+            )
         }
     } else {
         LazyColumn (
@@ -149,7 +152,8 @@ fun MessageRow(messageModel: MessageModel) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Box(
-                modifier = Modifier.align(if (isModel) Alignment.BottomStart else Alignment.BottomEnd)
+                modifier = Modifier
+                    .align(if (isModel) Alignment.BottomStart else Alignment.BottomEnd)
                     .padding(
                         start = if (isModel) 8.dp else 70.dp,
                         end = if (isModel) 70.dp else 8.dp,

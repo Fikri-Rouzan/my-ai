@@ -12,7 +12,7 @@ class ChatViewModel : ViewModel() {
         mutableStateListOf<MessageModel>()
     }
 
-    val generativeModel : GenerativeModel = GenerativeModel(
+    private val generativeModel : GenerativeModel = GenerativeModel(
         modelName = "gemini-1.5-flash",
         apiKey = Constant.apiKey
     )
@@ -36,7 +36,7 @@ class ChatViewModel : ViewModel() {
                 messageList.add(MessageModel(response.text.toString(),"model"))
             } catch (e : Exception) {
                 messageList.removeLast()
-                messageList.add(MessageModel("Error : " +e.message.toString(), "model"))
+                messageList.add(MessageModel("Error : " + e.message.toString(), "model"))
             }
         }
     }
