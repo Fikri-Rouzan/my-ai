@@ -1,6 +1,7 @@
 package com.example.myai
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,13 +17,12 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,12 +34,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myai.ui.theme.ColorBlack
+import com.example.myai.ui.theme.ColorGrey
+import com.example.myai.ui.theme.ColorHeader
 import com.example.myai.ui.theme.ColorModelMessage
+import com.example.myai.ui.theme.ColorPurple
 import com.example.myai.ui.theme.ColorUserMessage
-import com.example.myai.ui.theme.Purple80
+import com.example.myai.ui.theme.ColorWhite
 
 @Composable
 fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
@@ -62,7 +67,7 @@ fun AppHeader(modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(ColorHeader)
             .padding(
                 top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
             )
@@ -72,40 +77,66 @@ fun AppHeader(modifier: Modifier = Modifier) {
         Text(
             modifier = Modifier.padding(16.dp),
             text = "My AI",
-            color = Color.White,
+            color = ColorWhite,
             fontSize = 22.sp
         )
     }
 }
 
 @Composable
-fun MessageInput(onMessageSend: (String)-> Unit) {
+fun MessageInput(onMessageSend: (String) -> Unit) {
     var message by remember { mutableStateOf("") }
 
-    Row(
+    Box(
         modifier = Modifier
-            .padding(8.dp)
-            .padding(bottom = 32.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(bottom = 24.dp)
+            .background(Color.White, shape = RoundedCornerShape(24.dp))
+            .border(1.dp, Color.Gray, shape = RoundedCornerShape(24.dp))
     ) {
-        OutlinedTextField(
-            modifier = Modifier.weight(1f),
-            value = message,
-            onValueChange = { message = it },
-            placeholder = { Text("Type a message....") }
-        )
-        IconButton(
-            onClick = {
-                if (message.isNotEmpty()) {
-                    onMessageSend(message)
-                    message = ""
-                }
-            }
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Send,
-                contentDescription = "Send"
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 4.dp)
+            ) {
+                if (message.isEmpty()) {
+                    Text(
+                        text = "Type a message...",
+                        color = Color.Gray,
+                        fontSize = 16.sp
+                    )
+                }
+                BasicTextField(
+                    value = message,
+                    onValueChange = { message = it },
+                    textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                )
+            }
+
+            IconButton(
+                onClick = {
+                    if (message.isNotEmpty()) {
+                        onMessageSend(message)
+                        message = ""
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Send,
+                    contentDescription = "Send",
+                    tint = if (message.isNotEmpty()) ColorPurple else ColorGrey
+                )
+            }
         }
     }
 }
@@ -122,7 +153,7 @@ fun MessageList(modifier: Modifier = Modifier, messageList : List<MessageModel>)
                 modifier = Modifier.size(60.dp),
                 painter = painterResource(id = R.drawable.baseline_chat_24),
                 contentDescription = "Icon",
-                tint = Purple80
+                tint = ColorPurple
             )
             Text(
                 text = "Ask me anything",
@@ -146,6 +177,9 @@ fun MessageRow(messageModel: MessageModel) {
     val isModel = messageModel.role=="model"
 
     Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -168,7 +202,7 @@ fun MessageRow(messageModel: MessageModel) {
                     Text(
                         text = messageModel.message,
                         fontWeight = FontWeight.W500,
-                        color = Color.White
+                        color = ColorBlack
                     )
                 }
             }
