@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,14 +26,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,11 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myai.ui.theme.ColorBlack
 import com.example.myai.ui.theme.ColorGrey
-import com.example.myai.ui.theme.ColorHeader
 import com.example.myai.ui.theme.ColorModelMessage
+import com.example.myai.ui.theme.ColorNavy
 import com.example.myai.ui.theme.ColorPurple
 import com.example.myai.ui.theme.ColorUserMessage
 import com.example.myai.ui.theme.ColorWhite
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
@@ -64,18 +65,20 @@ fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
 
 @Composable
 fun AppHeader(modifier: Modifier = Modifier) {
-    Box(
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(ColorNavy, darkIcons = false)
+    }
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ColorHeader)
-            .padding(
-                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-            )
+            .background(ColorNavy)
+            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
             .height(56.dp),
-        contentAlignment = Alignment.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier.padding(16.dp),
             text = "My AI",
             color = ColorWhite,
             fontSize = 22.sp
@@ -92,8 +95,8 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .padding(bottom = 24.dp)
-            .background(Color.White, shape = RoundedCornerShape(24.dp))
-            .border(1.dp, Color.Gray, shape = RoundedCornerShape(24.dp))
+            .background(ColorWhite, shape = RoundedCornerShape(24.dp))
+            .border(4.dp, ColorNavy, shape = RoundedCornerShape(24.dp))
     ) {
         Row(
             modifier = Modifier
@@ -109,20 +112,21 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
                 if (message.isEmpty()) {
                     Text(
                         text = "Type a message...",
-                        color = Color.Gray,
-                        fontSize = 16.sp
+                        color = ColorGrey,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(start = 4.dp)
                     )
                 }
                 BasicTextField(
                     value = message,
                     onValueChange = { message = it },
-                    textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                    textStyle = TextStyle(fontSize = 16.sp, color = ColorBlack),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
+                        .padding(start = 4.dp)
                 )
             }
-
             IconButton(
                 onClick = {
                     if (message.isNotEmpty()) {
@@ -174,7 +178,8 @@ fun MessageList(modifier: Modifier = Modifier, messageList : List<MessageModel>)
 
 @Composable
 fun MessageRow(messageModel: MessageModel) {
-    val isModel = messageModel.role=="model"
+    val isModel = messageModel.role == "model"
+    val bubbleShape = RoundedCornerShape(16.dp)
 
     Row(
         modifier = Modifier
@@ -187,20 +192,22 @@ fun MessageRow(messageModel: MessageModel) {
         ) {
             Box(
                 modifier = Modifier
-                    .align(if (isModel) Alignment.BottomStart else Alignment.BottomEnd)
+                    .align(if (isModel) Alignment.CenterStart else Alignment.CenterEnd)
                     .padding(
                         start = if (isModel) 8.dp else 70.dp,
                         end = if (isModel) 70.dp else 8.dp,
                         top = 8.dp,
                         bottom = 8.dp
                     )
-                    .clip(RoundedCornerShape(48f))
-                    .background(if (isModel) ColorModelMessage else ColorUserMessage)
-                    .padding(16.dp)
+                    .border(3.dp, ColorBlack, bubbleShape)
+                    .background(if (isModel) ColorModelMessage else ColorUserMessage, bubbleShape)
+                    .sizeIn(minHeight = 40.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                contentAlignment = Alignment.Center
             ) {
                 SelectionContainer {
                     Text(
-                        text = messageModel.message,
+                        text = messageModel.message.trim(),
                         fontWeight = FontWeight.W500,
                         color = ColorBlack
                     )
