@@ -2,8 +2,11 @@ package com.example.myai
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,23 +67,28 @@ fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
             messageList = viewModel.messageList
         )
 
-        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        Column(modifier = Modifier.padding(bottom = 8.dp)) {
             MessageInput(
                 onMessageSend = { viewModel.sendMessage(it) }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Button(
-                onClick = { logout(context) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ColorRed)
-            ) {
-                Text("Logout", color = ColorWhite, fontFamily = fontFamily)
-            }
+            LogoutButton { logout(context) }
         }
+    }
+}
+
+@Composable
+fun LogoutButton(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = ColorRed)
+    ) {
+        Text("Logout", color = ColorWhite, fontFamily = fontFamily, fontWeight = FontWeight.Black)
     }
 }
 
@@ -113,7 +121,7 @@ fun AppHeader() {
         Text(
             text = "My AI",
             color = ColorWhite,
-            fontSize = 22.sp,
+            fontSize = 32.sp,
             fontFamily = fontFamily,
             fontWeight = FontWeight.ExtraBold
         )
@@ -123,14 +131,18 @@ fun AppHeader() {
 @Composable
 fun MessageInput(onMessageSend: (String) -> Unit) {
     var message by remember { mutableStateOf("") }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+
+    val borderColor = if (isFocused) ColorNavy else ColorBlack
+    val borderWidth = if (isFocused) 3.dp else 1.dp
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .padding(bottom = 24.dp)
             .background(ColorWhite, shape = RoundedCornerShape(24.dp))
-            .border(4.dp, ColorNavy, shape = RoundedCornerShape(24.dp))
+            .border(borderWidth, borderColor, shape = RoundedCornerShape(24.dp))
     ) {
         Row(
             modifier = Modifier
@@ -159,7 +171,8 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
-                        .padding(start = 4.dp)
+                        .padding(start = 4.dp),
+                    interactionSource = interactionSource
                 )
             }
             IconButton(
@@ -188,11 +201,10 @@ fun MessageList(modifier: Modifier = Modifier, messageList : List<MessageModel>)
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                modifier = Modifier.size(60.dp),
-                painter = painterResource(id = R.drawable.baseline_chat_24),
-                contentDescription = "Icon",
-                tint = ColorPurple
+            Image(
+                modifier = Modifier.size(100.dp).padding(bottom = 16.dp),
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Icon"
             )
             Text(
                 text = "Ask me anything",
@@ -232,8 +244,8 @@ fun MessageRow(messageModel: MessageModel) {
                     .padding(
                         start = if (isModel) 8.dp else 70.dp,
                         end = if (isModel) 70.dp else 8.dp,
-                        top = 8.dp,
-                        bottom = 8.dp
+                        top = 12.dp,
+                        bottom = 12.dp
                     )
                     .border(3.dp, ColorBlack, bubbleShape)
                     .background(if (isModel) ColorModelMessage else ColorUserMessage, bubbleShape)

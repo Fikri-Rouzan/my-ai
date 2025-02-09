@@ -5,21 +5,24 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.sp
+import com.example.myai.ui.theme.ColorBlack
 import com.example.myai.ui.theme.ColorPurple
 import com.example.myai.ui.theme.ColorWhite
 import com.example.myai.ui.theme.fontFamily
@@ -52,6 +55,7 @@ fun LoginPage() {
 
     SideEffect {
         systemUiController.isStatusBarVisible = true
+        systemUiController.setStatusBarColor(ColorBlack, darkIcons = true)
     }
 
     Box(
@@ -62,16 +66,17 @@ fun LoginPage() {
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(y = (-100).dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = "Lock Icon",
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "App Logo",
                 modifier = Modifier
-                    .size(120.dp)
-                    .padding(bottom = 16.dp),
-                tint = ColorPurple
+                    .size(140.dp)
+                    .padding(bottom = 16.dp)
             )
 
             Text(
@@ -124,9 +129,17 @@ fun LoginPage() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ColorPurple)
+                colors = ButtonDefaults.buttonColors(containerColor = ColorPurple),
+                shape = RoundedCornerShape(50),
+                border = BorderStroke(3.dp, ColorBlack)
             ) {
-                Text(text = "Login", color = ColorWhite, fontFamily = fontFamily, fontSize = 18.sp)
+                Text(
+                    text = "Login",
+                    color = ColorWhite,
+                    fontFamily = fontFamily,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Black
+                )
             }
         }
     }

@@ -32,6 +32,7 @@ class ChatViewModel : ViewModel() {
                 messageList.add(MessageModel("Typing....", "model"))
 
                 val response = chat.sendMessage(question)
+
                 messageList.removeLast()
                 messageList.add(MessageModel(response.text.toString(),"model"))
             } catch (e : Exception) {
