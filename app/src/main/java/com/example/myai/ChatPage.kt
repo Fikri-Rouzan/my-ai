@@ -88,25 +88,34 @@ fun LogoutButton(onClick: () -> Unit) {
             .padding(horizontal = 16.dp),
         colors = ButtonDefaults.buttonColors(containerColor = ColorRed)
     ) {
-        Text("Logout", color = ColorWhite, fontFamily = fontFamily, fontWeight = FontWeight.Black)
+        Text(
+            text = "Logout",
+            color = ColorWhite,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.Black
+        )
     }
 }
 
 fun logout(context: Context) {
     val sharedPref = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+
     with(sharedPref.edit()) {
         putBoolean("IS_LOGGED_IN", false)
         apply()
     }
 
     val intent = Intent(context, LoginActivity::class.java)
+
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
     context.startActivity(intent)
 }
 
 @Composable
 fun AppHeader() {
     val systemUiController = rememberSystemUiController()
+
     SideEffect {
         systemUiController.setStatusBarColor(ColorNavy, darkIcons = true)
     }
