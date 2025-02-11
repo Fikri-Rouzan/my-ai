@@ -2,6 +2,8 @@ package com.example.myai
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -55,6 +58,7 @@ import com.example.myai.ui.theme.ColorWhite
 import com.example.myai.ui.theme.fontFamily
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
     val context = LocalContext.current
@@ -81,19 +85,30 @@ fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
 
 @Composable
 fun LogoutButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = ColorRed)
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(ColorBlack)
+            .border(3.dp, ColorBlack, shape = RoundedCornerShape(24.dp))
     ) {
-        Text(
-            text = "Logout",
-            color = ColorWhite,
-            fontFamily = fontFamily,
-            fontWeight = FontWeight.Black
-        )
+        Button(
+            onClick = onClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp)),
+            colors = ButtonDefaults.buttonColors(containerColor = ColorRed),
+            shape = RoundedCornerShape(24.dp)
+        ) {
+            Text(
+                text = "Logout",
+                color = ColorWhite,
+                fontFamily = fontFamily,
+                fontWeight = FontWeight.Black,
+                fontSize = 18.sp
+            )
+        }
     }
 }
 
@@ -166,11 +181,14 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
             ) {
                 if (message.isEmpty()) {
                     Text(
-                        text = "Type a message...",
+                        text = "Type a message . . . .",
                         fontFamily = fontFamily,
                         color = ColorGrey,
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(start = 4.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                            .padding(start = 4.dp)
                     )
                 }
                 BasicTextField(
