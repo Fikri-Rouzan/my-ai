@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -31,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -60,71 +62,40 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
+fun ChatPage(
+    modifier: Modifier = Modifier,
+    viewModel: ChatViewModel
+) {
     val context = LocalContext.current
 
-    Column(modifier = modifier.fillMaxSize()) {
-        AppHeader()
-
-        MessageList(
-            modifier = Modifier.weight(1f),
-            messageList = viewModel.messageList
-        )
-
-        Column(modifier = Modifier.padding(bottom = 8.dp)) {
-            MessageInput(
-                onMessageSend = { viewModel.sendMessage(it) }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            LogoutButton { logout(context) }
-        }
-    }
-}
-
-@Composable
-fun LogoutButton(onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(ColorBlack)
-            .border(3.dp, ColorBlack, shape = RoundedCornerShape(24.dp))
-    ) {
-        Button(
-            onClick = onClick,
+    Scaffold(
+        topBar = {
+            AppHeader()
+        },
+        modifier = modifier
+            .fillMaxSize()
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp)),
-            colors = ButtonDefaults.buttonColors(containerColor = ColorRed),
-            shape = RoundedCornerShape(24.dp)
+                .padding(innerPadding)
+                .imePadding()
+                .fillMaxSize()
         ) {
-            Text(
-                text = "Logout",
-                color = ColorWhite,
-                fontFamily = fontFamily,
-                fontWeight = FontWeight.Black,
-                fontSize = 18.sp
+            MessageList(
+                modifier = Modifier.weight(1f),
+                messageList = viewModel.messageList
             )
+            Column {
+                MessageInput(
+                    onMessageSend = { viewModel.sendMessage(it) }
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                LogoutButton { logout(context) }
+            }
         }
     }
-}
-
-fun logout(context: Context) {
-    val sharedPref = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-
-    with(sharedPref.edit()) {
-        putBoolean("IS_LOGGED_IN", false)
-        apply()
-    }
-
-    val intent = Intent(context, LoginActivity::class.java)
-
-    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-    context.startActivity(intent)
 }
 
 @Composable
@@ -153,74 +124,6 @@ fun AppHeader() {
 }
 
 @Composable
-fun MessageInput(onMessageSend: (String) -> Unit) {
-    var message by remember { mutableStateOf("") }
-    val interactionSource = remember { MutableInteractionSource() }
-    val isFocused by interactionSource.collectIsFocusedAsState()
-
-    val borderColor = if (isFocused) ColorNavy else ColorBlack
-    val borderWidth = if (isFocused) 3.dp else 1.dp
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .background(ColorWhite, shape = RoundedCornerShape(24.dp))
-            .border(borderWidth, borderColor, shape = RoundedCornerShape(24.dp))
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 8.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 4.dp)
-            ) {
-                if (message.isEmpty()) {
-                    Text(
-                        text = "Type a message . . . .",
-                        fontFamily = fontFamily,
-                        color = ColorGrey,
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                            .padding(start = 4.dp)
-                    )
-                }
-                BasicTextField(
-                    value = message,
-                    onValueChange = { message = it },
-                    textStyle = TextStyle(fontSize = 16.sp, color = ColorBlack, fontFamily = fontFamily),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                        .padding(start = 4.dp),
-                    interactionSource = interactionSource
-                )
-            }
-            IconButton(
-                onClick = {
-                    if (message.isNotEmpty()) {
-                        onMessageSend(message)
-                        message = ""
-                    }
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "Send",
-                    tint = if (message.isNotEmpty()) ColorPurple else ColorGrey
-                )
-            }
-        }
-    }
-}
-
-@Composable
 fun MessageList(modifier: Modifier = Modifier, messageList : List<MessageModel>) {
     if (messageList.isEmpty()) {
         Column(
@@ -229,14 +132,22 @@ fun MessageList(modifier: Modifier = Modifier, messageList : List<MessageModel>)
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                modifier = Modifier.size(100.dp).padding(bottom = 16.dp),
+                modifier = Modifier.size(100.dp).padding(bottom = 14.dp),
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Icon"
             )
             Text(
-                text = "Ask me anything",
+                modifier = Modifier.padding(bottom = 6.dp),
+                text = "Hi, I'm My AI.",
                 fontSize = 22.sp,
-                fontFamily = fontFamily
+                fontFamily = fontFamily,
+                fontWeight = FontWeight.Black
+            )
+            Text(
+                text = "How can I help you today?",
+                fontSize = 16.sp,
+                fontFamily = fontFamily,
+                fontWeight = FontWeight.W500
             )
         }
     } else {
@@ -291,4 +202,117 @@ fun MessageRow(messageModel: MessageModel) {
             }
         }
     }
+}
+
+@Composable
+fun MessageInput(onMessageSend: (String) -> Unit) {
+    var message by remember { mutableStateOf("") }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+
+    val borderColor = if (isFocused) ColorNavy else ColorBlack
+    val borderWidth = if (isFocused) 3.dp else 1.dp
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .background(ColorWhite, shape = RoundedCornerShape(24.dp))
+            .border(borderWidth, borderColor, shape = RoundedCornerShape(24.dp))
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 4.dp)
+            ) {
+                if (message.isEmpty()) {
+                    Text(
+                        text = "Type a message . . . .",
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Black,
+                        color = ColorGrey,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                            .padding(start = 4.dp)
+                    )
+                }
+                BasicTextField(
+                    value = message,
+                    onValueChange = { message = it },
+                    textStyle = TextStyle(fontSize = 16.sp, color = ColorBlack, fontFamily = fontFamily),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                        .padding(start = 4.dp),
+                    interactionSource = interactionSource
+                )
+            }
+            IconButton(
+                onClick = {
+                    if (message.isNotEmpty()) {
+                        onMessageSend(message)
+                        message = ""
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    contentDescription = "Send",
+                    tint = if (message.isNotEmpty()) ColorPurple else ColorGrey
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LogoutButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(ColorBlack)
+            .border(3.dp, ColorBlack, shape = RoundedCornerShape(24.dp))
+    ) {
+        Button(
+            onClick = onClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp)),
+            colors = ButtonDefaults.buttonColors(containerColor = ColorRed),
+            shape = RoundedCornerShape(24.dp)
+        ) {
+            Text(
+                text = "Logout",
+                color = ColorWhite,
+                fontFamily = fontFamily,
+                fontWeight = FontWeight.Black,
+                fontSize = 18.sp
+            )
+        }
+    }
+}
+
+fun logout(context: Context) {
+    val sharedPref = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+
+    with(sharedPref.edit()) {
+        putBoolean("IS_LOGGED_IN", false)
+        apply()
+    }
+
+    val intent = Intent(context, LoginActivity::class.java)
+
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+    context.startActivity(intent)
 }
