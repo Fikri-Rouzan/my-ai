@@ -2,7 +2,7 @@
 
 ## About
 
-My AI is an Android application where users can have conversations with AI.
+My AI is an Android application where users can have conversations with AI. The main purpose of this application is to allow users to have conversations with AI through a chatbot.
 
 ## Technologies Used
 
