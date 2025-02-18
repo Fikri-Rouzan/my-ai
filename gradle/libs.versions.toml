@@ -1,6 +1,6 @@
 [versions]
 accompanistSystemuicontroller = "0.31.0-alpha"
-agp = "8.8.0"
+agp = "8.8.1"
 generativeai = "0.9.0"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
@@ -9,8 +9,8 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
-composeBom = "2024.04.01"
-uiTextGoogleFonts = "1.7.7"
+composeBom = "2025.02.00"
+uiTextGoogleFonts = "1.7.8"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
