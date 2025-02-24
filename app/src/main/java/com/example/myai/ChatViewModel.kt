@@ -16,7 +16,7 @@ class ChatViewModel : ViewModel() {
 
     private val generativeModel : GenerativeModel = GenerativeModel(
         modelName = "gemini-2.0-flash",
-        apiKey = Constant.apiKey
+        apiKey = BuildConfig.API_KEY
     )
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
