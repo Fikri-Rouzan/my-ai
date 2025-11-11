@@ -28,6 +28,7 @@ import com.example.myai.ui.theme.ColorPurple
 import com.example.myai.ui.theme.ColorWhite
 import com.example.myai.ui.theme.fontFamily
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import androidx.core.content.edit
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +36,7 @@ class LoginActivity : ComponentActivity() {
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val isLoggedIn = sharedPref.getBoolean("IS_LOGGED_IN", false)
 
         if (isLoggedIn) {
@@ -60,7 +61,6 @@ fun LoginPage() {
         systemUiController.isStatusBarVisible = true
         systemUiController.setStatusBarColor(ColorBlack, darkIcons = true)
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +81,6 @@ fun LoginPage() {
                     .size(140.dp)
                     .padding(bottom = 16.dp)
             )
-
             Text(
                 text = "Welcome to My AI",
                 fontFamily = fontFamily,
@@ -89,7 +88,6 @@ fun LoginPage() {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
@@ -99,9 +97,7 @@ fun LoginPage() {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
-
             Spacer(modifier = Modifier.height(8.dp))
-
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -113,16 +109,13 @@ fun LoginPage() {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Button(
                 onClick = {
                     if (username.isNotEmpty() && password.isNotEmpty()) {
                         val sharedPref = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
-                        with(sharedPref.edit()) {
+                        sharedPref.edit {
                             putBoolean("IS_LOGGED_IN", true)
-                            apply()
                         }
 
                         val intent = Intent(context, MainActivity::class.java)

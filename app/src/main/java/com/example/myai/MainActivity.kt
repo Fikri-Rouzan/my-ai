@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
         if (!isLoggedIn) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
+
             return
         }
 

@@ -59,6 +59,7 @@ import com.example.myai.ui.theme.ColorUserMessage
 import com.example.myai.ui.theme.ColorWhite
 import com.example.myai.ui.theme.fontFamily
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import androidx.core.content.edit
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
@@ -89,9 +90,7 @@ fun ChatPage(
                 MessageInput(
                     onMessageSend = { viewModel.sendMessage(it) }
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 LogoutButton { logout(context) }
             }
         }
@@ -105,7 +104,6 @@ fun AppHeader() {
     SideEffect {
         systemUiController.setStatusBarColor(ColorNavy, darkIcons = true)
     }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -209,7 +207,6 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
     var message by remember { mutableStateOf("") }
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-
     val borderColor = if (isFocused) ColorNavy else ColorBlack
     val borderWidth = if (isFocused) 3.dp else 1.dp
 
@@ -305,9 +302,8 @@ fun LogoutButton(onClick: () -> Unit) {
 fun logout(context: Context) {
     val sharedPref = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
 
-    with(sharedPref.edit()) {
+    sharedPref.edit {
         putBoolean("IS_LOGGED_IN", false)
-        apply()
     }
 
     val intent = Intent(context, LoginActivity::class.java)

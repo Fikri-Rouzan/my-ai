@@ -1,13 +1,13 @@
 # My AI
 
-## About
+## ℹ️ About
 
-My AI is an Android application where users can have conversations with AI. The main purpose of this application is to allow users to have conversations with AI through a chatbot.
+My AI is an Android application featuring a conversational AI chatbot, providing users with a simple and direct way to interact with artificial intelligence.
 
-## Technologies Used
+## 🛠️ Technologies Used
 
-- Programming Language: Kotlin.
-- Framework: Jetpack Compose.
-- Libraries: SystemUiController and Google AI client SDK.
-- AI Service: Gemini.
-- Software: Android Studio.
+- 🌐 **Programming Language:** Kotlin.
+- 🧩 **Framework:** Jetpack Compose.
+- ⚛️ **Libraries:** SystemUiController and Google AI client SDK.
+- 🤖 **AI Service:** Google Gemini.
+- 💻 **Software:** Android Studio.

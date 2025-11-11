@@ -32,7 +32,7 @@ class ChatViewModel : ViewModel() {
                 )
 
                 messageList.add(MessageModel(question,"user"))
-                messageList.add(MessageModel("Typing . . . .", "model"))
+                messageList.add(MessageModel("Typing...", "model"))
 
                 val response = chat.sendMessage(question)
 
