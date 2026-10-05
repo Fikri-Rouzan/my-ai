@@ -15,7 +15,7 @@ class ChatViewModel : ViewModel() {
     }
 
     private val generativeModel : GenerativeModel = GenerativeModel(
-        modelName = "gemini-2.0-flash",
+        modelName = "gemini-3.8-flash",
         apiKey = BuildConfig.API_KEY
     )
 
@@ -31,16 +31,25 @@ class ChatViewModel : ViewModel() {
                     }.toList()
                 )
 
-                messageList.add(MessageModel(question,"user"))
+                messageList.add(MessageModel(question, "user"))
                 messageList.add(MessageModel("Typing...", "model"))
 
                 val response = chat.sendMessage(question)
 
                 messageList.removeLast()
-                messageList.add(MessageModel(response.text.toString(),"model"))
+                messageList.add(MessageModel(response.text.toString(), "model"))
             } catch (e : Exception) {
-                messageList.removeLast()
-                messageList.add(MessageModel("Error: " + e.message.toString(), "model"))
+                if (messageList.isNotEmpty() && messageList.last().message == "Typing...") {
+                    messageList.removeLast()
+                }
+
+                val errorMessage = if (e.message?.contains("503") == true || e.message?.contains("high demand") == true) {
+                    "AI server is currently busy. Please try sending again in a few moments!"
+                } else {
+                    "Error connecting. Please try again."
+                }
+
+                messageList.add(MessageModel(errorMessage, "model"))
             }
         }
     }
